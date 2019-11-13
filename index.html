@@ -196,10 +196,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2019-11-11 14:51:51 / Modified: 17:00:36" itemprop="dateCreated datePublished" datetime="2019-11-11T14:51:51+08:00">2019-11-11</time>
+              <time title="Created: 2019-11-11 14:51:51" itemprop="dateCreated datePublished" datetime="2019-11-11T14:51:51+08:00">2019-11-11</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-11-13 16:42:04" itemprop="dateModified" datetime="2019-11-13T16:42:04+08:00">2019-11-13</time>
+              </span>
 
           
 
@@ -212,8 +218,25 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><strong>移动端ios全面屏适配解决方案</strong></p>
-<p>为什么ios出现适配问题</p>
+          <h3 id="移动端ios全面屏适配解决方案"><a href="#移动端ios全面屏适配解决方案" class="headerlink" title="移动端ios全面屏适配解决方案"></a><strong>移动端ios全面屏适配解决方案</strong></h3><h4 id="ios出现适配问题原因"><a href="#ios出现适配问题原因" class="headerlink" title="ios出现适配问题原因"></a>ios出现适配问题原因</h4><p>​        iPhone X之后的机型采用全面屏技术,顶部的刘海以及底部的横条会遮挡部分内容,另外四周的圆角也会有一定的影响.</p>
+<p>​        安卓全面屏手机因为没有给出顶部状态栏权限,不需要进行另外的适配操作.</p>
+<h4 id="如何进行适配"><a href="#如何进行适配" class="headerlink" title="如何进行适配"></a>如何进行适配</h4><p>​        <strong>进行适配的思路</strong>:首先判断用户使用的机型,再决定是否需要进行适配,并且选择合适的适配方案.(使用全屏适配方案,不使用全屏适配)</p>
+<h5 id="如何分辨机型"><a href="#如何分辨机型" class="headerlink" title="如何分辨机型"></a>如何分辨机型</h5><p>​        先用一层js判断使用的系统为ios还是安卓,如果为ios则添加对应的样式.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">const platform = window.navigator.userAgent.toLowerCase()</span><br><span class="line">  if(/iPhone|iPad|iPod|iOS/i.test(platform)) &#123;</span><br><span class="line">    docBody.classList.add(&apos;ios_ignore&apos;)</span><br><span class="line">    console.log(&apos;detect ios, adapt successfully!!!&apos;)</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>​        然后通过媒体查询获取设备的屏幕长宽,如果与全面屏机型长宽一致则进行适配.(目前项目使用方法)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@media only screen and (device-width: 375px) and (device-height: 812px) //对应iPhone X,XS机型</span><br><span class="line">@media only screen and (device-width: 414px) and (device-height: 896px) //对应iPhone XR,iPhone XS Max机型</span><br></pre></td></tr></table></figure>
+
+<p>​        另一种媒体查询判断方法:通过判断屏幕长度,如果屏幕高度大于等于812,就认为这个设备为全面屏,需要进行适配.(由于项目已经结束还没测试这种方法的可行性,下个项目记得测试)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">const isIphonex = () =&gt; &#123;</span><br><span class="line">  if (typeof window !== &apos;undefined&apos; &amp;&amp; window) &#123;</span><br><span class="line">    return /iphone/gi.test(window.navigator.userAgent) &amp;&amp; window.screen.height &gt;= 812;</span><br><span class="line">  &#125;</span><br><span class="line">  return false;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h5 id="适配的具体方法"><a href="#适配的具体方法" class="headerlink" title="适配的具体方法"></a>适配的具体方法</h5><p>​        <strong>使用全屏</strong>:给页面整体添加调用安全适配边距的类.iphoneX,给内容添加类.iphoneX_rl</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">.iphoneX&#123;</span><br><span class="line">    padding: constant(safe-area-inset-top) constant(safe-area-inset-right) constant(safe-area-inset-bottom) constant(safe-area-inset-left);  </span><br><span class="line">&#125;</span><br><span class="line">.iphoneX_rl&#123;</span><br><span class="line">    padding: 0 constant(safe-area-inset-right) 0 constant(safe-area-inset-left);  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>​        <strong>不使用全屏</strong>(项目使用方法):直接给整个页面添加上方边距以及下方边距</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">padding-top: 40px;</span><br><span class="line">padding-bottom: 10px;</span><br></pre></td></tr></table></figure>
+
+<p><strong>个人总结</strong>:目前使用的这种方案,在机型的判断上非常不灵活,出现了新的全面屏屏幕长宽就需要添加新的适配判断;并且直接添加上下边距的适配方法比较简单,适配性不强,例如横屏时候就容易出现问题.</p>
 
       
     </div>
